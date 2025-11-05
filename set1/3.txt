@@ -1,0 +1,211 @@
+/*
+Name-Siddharaj Ghorpade
+Rollno-I3118
+
+Problem statement:Implement the C program for CPU Scheduling Algorithms: Shortest Job First (Preemptive) and Round Robin with different arrival time.
+*/
+
+#include <stdio.h>
+#include <limits.h>
+
+struct Process {
+    int id, arrival, burst, remaining, completion, turnaround, waiting;
+};
+
+// Function to calculate waiting and turnaround times for SJF (Preemptive)
+void findTimesSJF(struct Process p[], int n) {
+    int completed = 0, t = 0, min_burst = INT_MAX, shortest = 0, is_done = 0;
+    int total_turnaround = 0, total_waiting = 0;
+
+    while (completed != n) {
+        // Find the process with the minimum remaining burst time
+        for (int i = 0; i < n; i++) {
+            if (p[i].arrival <= t && p[i].remaining > 0 && p[i].remaining < min_burst) {
+                min_burst = p[i].remaining;
+                shortest = i;
+                is_done = 1;
+            }
+        }
+
+        if (!is_done) {
+            t++;  // If no process is available at time t, increment time
+            continue;
+        }
+
+        p[shortest].remaining--;  // Decrease the remaining burst time
+        min_burst = p[shortest].remaining;
+
+        if (p[shortest].remaining == 0) {
+            completed++;
+            is_done = 0;
+            min_burst = INT_MAX;
+            p[shortest].completion = t + 1;
+            p[shortest].turnaround = p[shortest].completion - p[shortest].arrival;
+            p[shortest].waiting = p[shortest].turnaround - p[shortest].burst;
+            total_turnaround += p[shortest].turnaround;
+            total_waiting += p[shortest].waiting;
+        }
+
+        t++;
+    }
+
+    // Print results for SJF
+    printf("\nSJF (Preemptive) Scheduling:\n");
+    printf("PID\tArrival\tBurst\tCompletion\tTurnaround\tWaiting\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\n", p[i].id, p[i].arrival, p[i].burst, p[i].completion, p[i].turnaround, p[i].waiting);
+    }
+
+    printf("\nAverage Turnaround Time: %.2f\n", (float)total_turnaround / n);
+    printf("Average Waiting Time: %.2f\n", (float)total_waiting / n);
+}
+
+// Function to calculate waiting and turnaround times for Round Robin
+void findTimesRR(struct Process p[], int n, int quantum) {
+    int t = 0, completed = 0, total_turnaround = 0, total_waiting = 0;
+    int queue[n], front = 0, rear = 0;
+
+    // Add all processes to queue initially
+    for (int i = 0; i < n; i++) {
+        queue[rear++] = i;
+    }
+
+    while (completed != n) {
+        int idx = queue[front++];
+        
+        if (p[idx].remaining > 0) {
+            if (p[idx].remaining > quantum) {
+                t += quantum;
+                p[idx].remaining -= quantum;
+            } else {
+                t += p[idx].remaining;
+                p[idx].completion = t;
+                p[idx].turnaround = p[idx].completion - p[idx].arrival;
+                p[idx].waiting = p[idx].turnaround - p[idx].burst;
+                p[idx].remaining = 0;
+                total_turnaround += p[idx].turnaround;
+                total_waiting += p[idx].waiting;
+                completed++;
+            }
+            
+            if (p[idx].remaining > 0) {
+                queue[rear++] = idx;  // Add process back if not completed
+            }
+        }
+    }
+
+    // Print results for Round Robin
+    printf("\nRound Robin Scheduling (Quantum = %d):\n", quantum);
+    printf("PID\tArrival\tBurst\tCompletion\tTurnaround\tWaiting\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\n", p[i].id, p[i].arrival, p[i].burst, p[i].completion, p[i].turnaround, p[i].waiting);
+    }
+
+    printf("\nAverage Turnaround Time: %.2f\n", (float)total_turnaround / n);
+    printf("Average Waiting Time: %.2f\n", (float)total_waiting / n);
+}
+
+int main() {
+    int n, choice, quantum;
+    
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+    struct Process p[n];
+
+    printf("Enter arrival time and burst time for each process:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Process %d:\n", i + 1);
+        p[i].id = i + 1;
+        printf("Arrival Time: ");
+        scanf("%d", &p[i].arrival);
+        printf("Burst Time: ");
+        scanf("%d", &p[i].burst);
+        p[i].remaining = p[i].burst;  // Initially, remaining time = burst time
+    }
+
+    printf("\nChoose Scheduling Algorithm:\n");
+    printf("1. SJF (Preemptive)\n2. Round Robin\n");
+    printf("Enter choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            findTimesSJF(p, n);  // Call SJF Preemptive function
+            break;
+        case 2:
+            printf("Enter time quantum: ");
+            scanf("%d", &quantum);
+            findTimesRR(p, n, quantum);  // Call Round Robin function
+            break;
+        default:
+            printf("Invalid choice!\n");
+    }
+
+    return 0;
+}
+/*
+1) SJF(Preemptive)
+Enter number of processes: 4
+Enter arrival time and burst time for each process:
+Process 1:
+Arrival Time: 0
+Burst Time: 3
+Process 2:
+Arrival Time: 1
+Burst Time: 6
+Process 3:
+Arrival Time: 4
+Burst Time: 4
+Process 4:
+Arrival Time: 6
+Burst Time: 2
+
+
+Choose Scheduling Algorithm:
+1. SJF (Preemptive)
+2. Round Robin
+Enter choice: 1
+
+SJF (Preemptive) Scheduling:
+PID     Arrival Burst   Completion      Turnaround      Waiting
+1       0       3       3               3               0
+2       1       6       15              14              8
+3       4       4       8               4               0
+4       6       2       10              4               2
+
+Average Turnaround Time: 6.25
+Average Waiting Time: 2.50
+
+2) Round Robin:
+Enter number of processes: 4
+Enter arrival time and burst time for each process:
+Process 1:
+Arrival Time: 0
+Burst Time: 3
+Process 2:
+Arrival Time: 1
+Burst Time: 6
+Process 3:
+Arrival Time: 4
+Burst Time: 4
+Process 4:
+Arrival Time: 6
+Burst Time: 2
+
+
+Choose Scheduling Algorithm:
+1. SJF (Preemptive)
+2. Round Robin
+Enter choice: 2
+Enter time quantum: 2
+
+Round Robin Scheduling (Quantum = 2):
+PID     Arrival Burst   Completion      Turnaround      Waiting
+1       0       3       9               9               6
+2       1       6       15              14              8
+3       4       4       13              9               5
+4       6       2       8               2               0
+
+Average Turnaround Time: 8.50
+Average Waiting Time: 4.75
+*/

@@ -1,0 +1,145 @@
+
+Problem Statement:
+Inter process communication in Linux using following.
+A. FIFOS: Full duplex communication between two independent
+processes. First process accepts sentences and writes on one pipe to be
+read by second process and second process counts number of
+characters, number of words and number of lines in accepted
+sentences, writes this output in a text file and writes the contents of the
+file on second pipe to be read by first process and displays on standard
+output.
+
+
+code 1:
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+#define Max_Buff 1024
+
+int main()
+{
+	int fd1,fd2,c=0;
+	char * myfifo1="myfifo1";
+	char * myfifo2="myfifo2";
+	
+	
+	char buff[Max_Buff];
+	char str;
+	int res;
+	
+	res=mkfifo(myfifo1,0777);
+	if(res==-1)
+	{
+		printf("\nPipe 1 not created");
+		return 0;
+	}
+	
+	printf("\nEnter the string\n");
+	fd1=open(myfifo1,O_WRONLY);
+	while((str=getchar())!='#')
+	buff[c++]=str;
+	buff[c]='\0';
+	
+	write(fd1,buff,sizeof(buff));
+	close(fd1);
+	
+	fd2=open(myfifo2,O_RDONLY);
+	read(fd2,&buff,Max_Buff);
+	
+	printf("\nContents of files:\n %s",buff);
+	close(fd2);
+	unlink(myfifo2);
+	
+	return 0;
+	}
+	
+
+Output 1:
+Enter the string
+Hello
+Welcome
+Good Morning
+
+Contents of files:
+ 
+No. of lines are :3
+
+No. of words are :4
+
+No. of chars are :23
+
+
+
+code2:
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+#define MAX_BUF 1024
+int main()
+{
+	int words=0,lines=0,chars=0;
+	FILE *fp;
+	char buf[MAX_BUF];
+	int fd,fd1,i=0;
+	
+	char *myfifo1="myfifo1";
+	char *myfifo2="myfifo2";
+	mkfifo(myfifo2,0777);
+	
+	fd=open(myfifo1,O_RDONLY);
+	read(fd,buf,MAX_BUF);
+	
+	printf("\nmessage received :%s",buf);
+	
+	while(buf[i]!='\0')
+	{
+		if(buf[i]==' '||buf[i]=='\n')
+		{
+			words++;
+			
+		}
+		else
+			chars++;
+			
+			
+		if(buf[i]=='\n')
+			lines++;
+			
+		i++;		
+	}
+	words++;
+	lines++;
+	printf("\nNo. of lines are :%d\n",lines);
+	printf("\nNo. of words are :%d\n",words);
+	printf("\nNo. of chars are :%d\n",chars);
+	
+	fp=fopen("a.txt","w+");
+	fprintf(fp,"\nNo. of lines are :%d\n",lines);
+	fprintf(fp,"\nNo. of words are :%d\n",words);
+	fprintf(fp,"\nNo. of chars are :%d\n",chars);
+	
+	fclose(fp);
+	close(fd);
+	unlink(myfifo1);
+	
+	fd1=open(myfifo2,O_WRONLY);
+	system("cat a.txt>myfifo2");
+	close(fd1);
+	return 0;
+	
+}
+
+Output 2:
+message received :Hello
+Welcome
+Good Morning
+No. of lines are :3
+
+No. of words are :4
+
+No. of chars are :23
+
+
+	
