@@ -1,0 +1,365 @@
+/*
+Name-Ayush Kothadia  
+Roll No:-I3106
+Problem Statement:-
+	SHELL PROGRAMMING
+	
+
+*/
+//code:-
+
+echo "ENTER ADDRESS BOOK NAME:    "
+read fname
+# create file with header (overwrite to avoid duplication)
+echo -e "NAME\t\t ID \t DOB\t\tADDRESS\t MOB_NO\t\t SALARY" > $fname
+echo -e "ADDRESS BOOK CREATED\n"
+
+ch=0
+while [ $ch -ne 7 ]
+do
+echo -e "ADDRESS BOOK :\n"
+echo -e "1.CREATE ADDRESS BOOK"
+echo -e "2.VIEW ADDRESS BOOK"
+echo -e "3.INSERT A RECORD"
+echo -e "4.DELETE A RECORD"
+echo -e "5.MODIFY A RECORD"
+echo -e "6.SEARCH A RECORD"
+echo -e "7.EXIT FROM ADDRESS BOOK"
+echo -e "ENTER YOUR CHOICE"
+read ch
+case $ch in
+	1)
+	  echo -e "enter number of records you want to enter \t"
+	  read n
+	  for((i=0;i<$n;i++))
+	  do
+	  	echo -e "ENTER NAME OF EMPLOYEE\t"
+	  	read ename
+	  	echo -e "ENTER ID OF EMPLOYEE\t"
+	  	read eid
+	  	echo -e "ENTER DOB OF EMPLOYEE\t"
+	  	read edob
+	  	echo -e "ENTER ADDRESS OF EMPLOYEE\t"
+	  	read eadd
+	  	echo -e "ENTER MOBILE NO. OF EMPLOYEE\t"
+	  	read emob
+	  	echo -e "ENTER SALARY OF EMPLOYEE\t"
+	  	read esal
+	  	echo -e " $ename \t $eid \t $edob \t $eadd \t $emob \t $esal" >> $fname
+	  done
+	  ;;
+	2)
+	  cat $fname
+	  ;;
+	3)
+	  echo -e "enter new record"
+	  echo -e "ENTER NAME OF EMPLOYEE\t"
+	  read ename
+	  echo -e "ENTER ID OF EMPLOYEE\t"
+	  read eid
+	  echo -e "ENTER DOB OF EMPLOYEE\t"
+	  read edob
+	  echo -e "ENTER ADDRESS OF EMPLOYEE\t"
+	  read eadd
+	  echo -e "ENTER MOBILE NO. OF EMPLOYEE\t"
+	  read emob
+	  echo -e "ENTER SALARY OF EMPLOYEE\t"
+	  read esal
+	  echo -e " $ename \t $eid \t $edob \t $eadd \t $emob \t $esal" >> $fname
+	  ;;
+	4)
+	  echo -e "ENTER EMPLOYEE ID TO BE DELETED "
+	  read eid
+	  if grep -qw $eid $fname
+	  then	
+	  		head -1 $fname > temp
+	  		grep -wv $eid $fname >> temp
+	  		mv temp $fname
+	  		echo "RECORD DELETED"
+	  else
+	  		echo "RECORD DOES NOT EXIST "
+	  fi
+	  ;;
+	5)
+	  echo "ENTER EMPLOYE  ID TO BE MODIFIY"
+	  read eid
+	  if grep -qw $eid $fname
+	  then	
+	  		head -1 $fname > temp
+	  		grep -wv $eid $fname >> temp
+	  		mv temp $fname
+	  		echo -e "enter modified record"
+	  		echo -e "ENTER NAME OF EMPLOYEE\t"
+	  		read ename
+	  		echo -e "ENTER ID OF EMPLOYEE\t"
+	  		read eid
+	  		echo -e "ENTER DOB OF EMPLOYEE\t"
+	  		read edob
+	  		echo -e "ENTER ADDRESS OF EMPLOYEE\t"
+	  		read eadd
+	  		echo -e "ENTER MOBILE NO. OF EMPLOYEE\t"
+	  		read emob
+	  		echo -e "ENTER SALARY OF EMPLOYEE\t"
+	  		read esal
+	  		echo -e " $ename \t $eid \t $edob \t $eadd \t $emob \t $esal" >> $fname
+	  else
+	  		echo "RECORD DOES NOT EXIST "
+	  fi
+	  ;;
+	6)
+	  echo -e "ENTER EMPLOYEE ID TO BE SEARCHED "
+	  read eid
+	  if grep -qw $eid $fname
+	  then
+	  		grep -w $eid $fname 	
+	  		echo "RECORD FOUND...!!!"
+	  else
+	  		echo "RECORD DOES NOT EXIST "
+	  fi
+	  ;;
+	7)
+	  echo "Exiting..."
+	  ;;
+	*)
+	  echo "Invalid Choice!"
+	  ;;
+esac
+done
+
+
+/* 
+Output
+ENTER ADDRESS BOOK NAME:    
+emp_records
+ADDRESS BOOK CREATED
+
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+1
+enter number of records you want to enter 	
+2
+ENTER NAME OF EMPLOYEE	
+Amit
+ENTER ID OF EMPLOYEE	
+101
+ENTER DOB OF EMPLOYEE	
+05/06/1996
+ENTER ADDRESS OF EMPLOYEE	
+Nagpur
+ENTER MOBILE NO. OF EMPLOYEE	
+9876543210
+ENTER SALARY OF EMPLOYEE	
+72000
+ENTER NAME OF EMPLOYEE	
+Riya
+ENTER ID OF EMPLOYEE	
+102 
+ENTER DOB OF EMPLOYEE	
+23/01/1998
+ENTER ADDRESS OF EMPLOYEE	
+Mumbai
+ENTER MOBILE NO. OF EMPLOYEE	
+9123456789
+ENTER SALARY OF EMPLOYEE	
+55000
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+2
+NAME	 ID 	 DOB	 ADDRESS	 MOB_NO		 SALARY
+ Amit 	 101 	 05/06/1996 	 Nagpur 	 9876543210 	 72000 
+
+ Riya 	 102 	 23/01/1998 	 Mumbai 	 9123456789 	 55000 
+
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+3
+enter new record
+ENTER NAME OF EMPLOYEE	
+Karan
+ENTER ID OF EMPLOYEE	
+103
+ENTER DOB OF EMPLOYEE	
+19/08/1997
+ENTER ADDRESS OF EMPLOYEE	
+Pune
+ENTER MOBILE NO. OF EMPLOYEE	
+9001122334
+ENTER SALARY OF EMPLOYEE	
+60000
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+2
+NAME	 ID 	 DOB	 ADDRESS	 MOB_NO		 SALARY
+ Amit 	 101 	 05/06/1996 	 Nagpur 	 9876543210 	 72000 
+
+ Riya 	 102 	 23/01/1998 	 Mumbai 	 9123456789 	 55000 
+
+ Karan 	 103 	 19/08/1997 	 Pune 	 9001122334 	 60000 
+
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+5
+ENTER EMPLOYE  ID TO BE MODIFIY
+101
+ Amit 	 101 	 05/06/1996 	 Nagpur 	 9876543210 	 72000 
+enter modified record
+ENTER NAME OF EMPLOYEE	
+Amit Sharma
+ENTER ID OF EMPLOYEE	
+101
+ENTER DOB OF EMPLOYEE	
+05/06/1996
+ENTER ADDRESS OF EMPLOYEE	
+Nagpur City
+ENTER MOBILE NO. OF EMPLOYEE	
+9898989898
+ENTER SALARY OF EMPLOYEE	
+80000
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+2
+NAME	 ID 	 DOB	 ADDRESS	 MOB_NO		 SALARY
+
+ Riya 	 102 	 23/01/1998 	 Mumbai 	 9123456789 	 55000 
+
+ Karan 	 103 	 19/08/1997 	 Pune 	 9001122334 	 60000 
+
+ Amit Sharma 	 101 	 05/06/1996 	 Nagpur City 	 9898989898 	 80000 
+
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+4
+ENTER EMPLOYEE ID TO BE DELETED 
+101
+ Amit Sharma 	 101 	 05/06/1996 	 Nagpur City 	 9898989898 	 80000 
+RECORD DELETED
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+2
+NAME	 ID 	 DOB	 ADDRESS	 MOB_NO		 SALARY
+
+ Riya 	 102 	 23/01/1998 	 Mumbai 	 9123456789 	 55000 
+
+ Karan 	 103 	 19/08/1997 	 Pune 	 9001122334 	 60000 
+
+
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+5
+ENTER EMPLOYE  ID TO BE MODIFIY
+103
+ Karan 	 103 	 19/08/1997 	 Pune 	 9001122334 	 60000 
+enter modified record
+ENTER NAME OF EMPLOYEE	
+Sneha
+ENTER ID OF EMPLOYEE	
+104
+ENTER DOB OF EMPLOYEE	
+11/11/1999
+ENTER ADDRESS OF EMPLOYEE	
+Delhi
+ENTER MOBILE NO. OF EMPLOYEE	
+9011223344
+ENTER SALARY OF EMPLOYEE	
+70000
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+2
+NAME	 ID 	 DOB	 ADDRESS	 MOB_NO		 SALARY
+
+ Riya 	 102 	 23/01/1998 	 Mumbai 	 9123456789 	 55000 
+
+ Sneha 	 104 	 11/11/1999 	 Delhi 	 9011223344 	 70000 
+
+ADDRESS BOOK :
+
+1.CREATE ADDRESS BOOK
+2.VIEW ADDRESS BOOK
+3.INSERT A RECORD
+4.DELETE A RECORD
+5.MODIFY A RECORD
+6.SEARCH A RECORD
+7.EXIT FROM ADDRESS BOOK
+ENTER YOUR CHOICE
+7
+*/
